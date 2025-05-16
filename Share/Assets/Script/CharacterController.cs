@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
+    private GameManager _gameManager;
+
+
     private const string animParamSpeed = "Speed";
 
     private InputHandler inputHandler;
+    private UIManager _uiManager;
 
     //Character Properties
     private float hp = 100f;
@@ -42,6 +46,8 @@ public class CharacterController : MonoBehaviour
 
     private void init()
     {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         inputHandler = GetComponent<InputHandler>();
         playerRB = GetComponent<Rigidbody>();
         playerCollider = GetComponent<BoxCollider>();
@@ -115,6 +121,10 @@ public class CharacterController : MonoBehaviour
             float angle = Vector3.Angle(hitInfo.normal, Vector3.up);
 
             Debug.Log("Slope Angle: " + angle);
+
+
+            _uiManager.SlopeAngleText = angle.ToString("F1") + "¡Æ";
+
             return angle;
         }
 
