@@ -4,85 +4,66 @@ using UnityEngine.Rendering.UI;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject cameraAnchorPoint;
-    public GameObject cameraFollowPosition;
+    [Header("Targets")]
+    public Transform cameraAnchorPoint;
+    public Transform cameraFollowTarget;
+
+    [Header("References")]
+    [SerializeField] private InputManager inputManager; // GameManager 통해 할당받거나 인스펙터에서 직접 할당
+
+    [Header("Settings")]
+    [SerializeField] private float rotationSpeed = 200f;
+    [SerializeField] private float minYAngle = -70f;
+    [SerializeField] private float maxYAngle = 70f;
+    [SerializeField] private float followSpeed = 15f;
 
     private Camera mainCamera;
-    private InputHandler inputHandler;
-    private Transform playerTransform;
+    private float currentXAngle = 0f;
 
-    private CharacterController playerController;
-
-    private float mouseXValue = 0f;
-    private float mouseYValue = 0f;
-
-    private float rotationSpeed = 100f; //Camera rotation speed
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        init();
+        mainCamera = Camera.main;
+        if (mainCamera == null) Debug.LogError("Main Camera not found!");
+
+        // InputManager 참조 설정 (GameManager가 있다면 GameManager를 통해 받는 것이 좋음)
+        if (inputManager == null)
+        {
+            if (GameManager.Instance != null) inputManager = GameManager.Instance.GetInputManager();
+            if (inputManager == null) Debug.LogError("InputManager not assigned to CameraController!");
+        }
+
+        if (cameraAnchorPoint == null) Debug.LogError("Camera Anchor Point not assigned!");
+        if (cameraFollowTarget == null) Debug.LogError("Camera Follow Target not assigned!");
+
+        // 초기 카메라 각도 설정
+        // currentXAngle = cameraAnchorPoint.localEulerAngles.x;
+        //Cursor.lockState = CursorLockMode.Locked; // 마우스 커서 숨김
+        //Cursor.visible = false;
     }
 
-    void init()
+    void LateUpdate()
     {
-        mainCamera = GameObject.FindFirstObjectByType<Camera>();
-        inputHandler = GetComponent<InputHandler>(); playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        playerController = GetComponent<CharacterController>();
+        if (inputManager == null || mainCamera == null || cameraAnchorPoint == null || cameraFollowTarget == null) return;
+
+        HandleRotation();
+        HandlePosition();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void HandleRotation()
     {
+        float mouseYInput = inputManager.MouseYValue;
+        currentXAngle -= mouseYInput * rotationSpeed * UnityEngine.Time.deltaTime;
+        currentXAngle = Mathf.Clamp(currentXAngle, minYAngle, maxYAngle);
 
+        // 카메라 앵커(보통 플레이어 몸통의 일부 또는 카메라 전용 회전축)의 X축 회전으로 상하 시점 조절
+        // 플레이어 캐릭터의 Y축 회전(좌우 회전)은 CharacterController에서 담당하고, cameraAnchorPoint는 그 자식으로 따라감
+        cameraAnchorPoint.localEulerAngles = new Vector3(currentXAngle, cameraAnchorPoint.localEulerAngles.y, 0);
     }
 
-    private void FixedUpdate()
+    private void HandlePosition()
     {
-        playerCamMove();
-    }
-
-    private void playerCamMove()
-    {
-        mainCameraPositionUpdate();
-        mainCameraRotation();
-    }
-
-    private void mainCameraPositionUpdate()
-    {
-        mainCamera.transform.position = cameraFollowPosition.transform.position;
-        mainCamera.transform.forward = cameraAnchorPoint.transform.forward;
-    }
-
-    private void mainCameraRotation()
-    {
-        float mouseXInput = playerController.getPlayerRotationInput;
-        float mouseYInput = -inputHandler.getMouseYInput * rotationSpeed * Time.deltaTime;
-
-        //cameraAnchorPoint.transform.forward = playerTransform.forward;
-        //cameraFollowPosition.transform.forward = playerTransform.forward;
-
-        //Debug.Log("mouseY:" + mouseYInput);
-
-        //mouseYValue += mouseYInput * rotationSpeed * Time.deltaTime;
-        //mouseYValue = Mathf.Clamp(mouseYValue, -70f, 70f); //Lock up/down rot
-
-        mouseYValue += mouseYInput;
-        mouseYValue = Mathf.Clamp(mouseYValue, -70f, 70f); //Lock up/down rot
-
-        //Camera.main.transform.forward = playerTransform.forward;
-        Vector3 cameraAngle = Camera.main.transform.eulerAngles;
-        cameraAngle.x = mouseYValue;
-        Camera.main.transform.eulerAngles = cameraAngle;
-
-        //Debug.Log("cameraXAngle:" + cameraXAngle);
-
-    }
-
-    private void OnFootstep(AnimationEvent animationEvent)
-    {
-
+        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, cameraFollowTarget.position, followSpeed * UnityEngine.Time.deltaTime);
+        mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, cameraAnchorPoint.rotation, followSpeed * UnityEngine.Time.deltaTime);
     }
 
 

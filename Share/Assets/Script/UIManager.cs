@@ -4,20 +4,21 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public TextMeshProUGUI slopeAngle;
-    public TextMeshProUGUI temp;
-    public TextMeshProUGUI weather;
-    public Slider durabilitySlider;
+    [Header("UI Elements")]
+    public TextMeshProUGUI slopeAngleTextUI;
+    public TextMeshProUGUI tempTextUI;
+    public TextMeshProUGUI weatherTextUI;
+    public Slider durabilitySliderUI;
 
-    private const string _slopeAngleText = "Slope : ";
-    private const string _tempText = "Temp : ";
-    private const string _weatherText = "Weather : ";
-    private const float _durabilityDefault = 1f;
+    private const string SLOPE_ANGLE_PREFIX = "Slope : ";
+    private const string TEMP_PREFIX = "Temp : ";
+    private const string WEATHER_PREFIX = "Weather : ";
+    private const float DURABILITY_DEFAULT_VALUE = 1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        uiInit();
+        Init();
     }
 
     // Update is called once per frame
@@ -26,31 +27,38 @@ public class UIManager : MonoBehaviour
 
     }
 
-    private void uiInit()
+    public void Init()
     {
-        slopeAngle.text = _slopeAngleText + 0f;
-        temp.text = _tempText + 0f;
-        weather.text = _weatherText + "Clear";
-        durabilitySlider.value = _durabilityDefault;
+        slopeAngleTextUI.text = SLOPE_ANGLE_PREFIX + 0f;
+        tempTextUI.text = TEMP_PREFIX + 0f;
+        weatherTextUI.text = WEATHER_PREFIX + "Clear";
+        durabilitySliderUI.value = DURABILITY_DEFAULT_VALUE;
     }
 
     public string SlopeAngleText
     {
-        set { slopeAngle.text = _slopeAngleText + value; }
+        set { slopeAngleTextUI.text = SLOPE_ANGLE_PREFIX + value; }
     }
 
     public string TempText
     {
-        set { temp.text = _tempText + value; }
+        set { tempTextUI.text = TEMP_PREFIX + value; }
     }
 
     public string WeatherText
     {
-        set { weather.text = _weatherText + value; }
+        set { weatherTextUI.text = WEATHER_PREFIX + value; }
     }
 
-    public string durabilityText
+    public void UpdateDurabilitySlider(float currentDurability, float maxDurability)
     {
-        set { durabilitySlider.value = float.Parse(value); }
+        if (durabilitySliderUI && maxDurability > 0)
+        {
+            durabilitySliderUI.value = Mathf.Clamp01(currentDurability / maxDurability);
+        }
+        else if (durabilitySliderUI)
+        {
+            durabilitySliderUI.value = 0;
+        }
     }
 }

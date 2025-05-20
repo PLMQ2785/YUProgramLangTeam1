@@ -9,6 +9,9 @@ IMGUI Base file added
 IMGUI Base file removed -> Change to Unity
 V0.1.0 Character controller기본 조작 구현(걷기, 애니메이션), Light Controller(태양 주기)
 
+2025/05/20
+V0.2.0 Class Diagram에 맞게 코드 리팩토링
+
 ---
 
 프로젝트 파일 적용방법
