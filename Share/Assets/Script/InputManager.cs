@@ -44,12 +44,11 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        ProcessInput();
     }
 
     private void FixedUpdate()
     {
-        ProcessInput();
     }
 
     private void LateUpdate()
@@ -68,28 +67,9 @@ public class InputManager : MonoBehaviour
     }
 
 
-    public bool IsKeyPressed(KeyCode keyCode)
-    {
-        return Input.GetKey(keyCode);
-    }
-
-    public bool IsKeyDown(KeyCode keyCode)
-    {
-        return Input.GetKeyDown(keyCode);
-    }
-
-    public Vector2 GetMouseCoord()
-    {
-        return Input.mousePosition;
-    }
-
-    public bool IsMouseButtonPressed(int button)
-    {
-        return Input.GetMouseButton(button);
-    }
-
-    public bool IsMouseButtonDown(int button)
-    {
-        return Input.GetMouseButtonDown(button);
-    }
+    public bool IsKeyPressed(KeyCode keyCode) => Input.GetKey(keyCode);
+    public bool IsKeyDown(KeyCode keyCode) => Input.GetKeyDown(keyCode);
+    public Vector2 GetMouseCoord() => Input.mousePosition;
+    public bool IsMouseButtonPressed(int button) => Input.GetMouseButton(button);
+    public bool IsMouseButtonDown(int button) => Input.GetMouseButtonDown(button);
 }

@@ -17,7 +17,7 @@ public class WeatherController : MonoBehaviour
 
     [Header("설정")]
     //[SerializeField, Range(0, 1440), Header("Modifiers"), Tooltip("현재 시간")] private float TimeOfDay;
-    [SerializeField, Tooltip("태양 경로의 Y축 회전값")] private float SunDirection = 75.9f;                  //여름 75.9, 겨울 28.9, 봄/가을 52.4 (근사치)
+    [SerializeField, Tooltip("태양 경로의 Y축 회전값")] private float SunDirection = 80.5f;                  //여름 80.5, 겨울 34.5, 봄/가을 57.5 (근사치)
     //[SerializeField, Tooltip("시간 배속")] private float TimeMultiplier = 1;
     [SerializeField] private bool ControlLights = true;
 
@@ -80,16 +80,12 @@ public class WeatherController : MonoBehaviour
 
         //TimeOfDay = TimeOfDay + (Time.deltaTime * TimeMultiplier);
         //TimeOfDay = TimeOfDay % 1440;
-        UpdateLighting(gameTime.GetLightUpdateTime());
+        //UpdateLighting(gameTime.GetLightUpdateTime());
+        UpdateLighting(gameTime.TimeOfDayNormalized);
 
         // UI 업데이트 예시 (UIManager를 찾아 직접 업데이트)
         //UIManager uiManager = FindObjectOfType<UIManager>();
         UIManager uiManager = FindFirstObjectByType<UIManager>();
-        if (uiManager != null)
-        {
-            uiManager.WeatherText = currentWeather.GetCurrentCondition();
-            uiManager.TempText = currentWeather.TemperatureCelcius.ToString("F1") + "°C";
-        }
     }
 
     /// 시간 비율에 따라, 현재 씬의 렌더링 세팅과 조명 색상을 프리셋에 맞게 설정함.
@@ -134,6 +130,17 @@ public class WeatherController : MonoBehaviour
             }
         }
 
+    }
 
+    //여름 80.5, 겨울 34.5, 봄/가을 57.5 (근사치)
+    public void SetSunAzimuthForSeason(string season)
+    {
+        switch (season.ToLower())
+        {
+            case "spring": case "autumn": SunDirection = 57.5f; break;
+            case "summer": SunDirection = 80.5f; break;
+            case "winter": SunDirection = 34.5f; break;
+            default: SunDirection = 80.5f; break;
+        }
     }
 }

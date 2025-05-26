@@ -14,7 +14,7 @@ public class FootWear : Equipment
 
     public FootWear(string name, int maxDura, int currentDura, SoleType type/*, float itemWeight = 0.5f*/) : base(name, maxDura, currentDura/*, itemWeight*/)
     {
-        soleType = type;
+        this.soleType = type;
     }
 
     public override void Use(int amount = 1)
