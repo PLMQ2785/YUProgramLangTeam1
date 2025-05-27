@@ -1,4 +1,4 @@
-using NUnit.Framework;
+Ôªøusing NUnit.Framework;
 using System;
 using TMPro;
 using UnityEngine;
@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     public TMP_InputField temperatureInput;
     public TMP_InputField humidityInput;
     public TMP_Dropdown weatherDropdown;
-    public TMP_Dropdown sunPositionDropdown;   //∞Ë¿˝∫∞, ø©∏ß 80.5, ∞‹øÔ 34.5, ∫Ω/∞°¿ª 57.5
+    public TMP_Dropdown sunPositionDropdown;   //Í≥ÑÏ†àÎ≥Ñ, Ïó¨Î¶Ñ 80.5, Í≤®Ïö∏ 34.5, Î¥Ñ/Í∞ÄÏùÑ 57.5
 
     [Header("Character")]
     public TMP_Dropdown soleTypeDropdown;
@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
     public Slider multiplierSlider;
     public TextMeshProUGUI multiplierDisplayText;
 
-    [Header("Target Components")] // ¿ŒΩ∫∆Â≈Õ/GameManagerø°º≠ «“¥Á
+    [Header("Target Components")] // Ïù∏Ïä§ÌéôÌÑ∞/GameManagerÏóêÏÑú Ìï†Îãπ
     public Weather weather;
     public WeatherController weatherController;
     public Character character;
@@ -96,6 +96,11 @@ public class UIManager : MonoBehaviour
     public string WeatherText
     {
         set { weatherTextUI.text = WEATHER_PREFIX + value; }
+    }
+
+    public string FatigueScoreText
+    {
+        set { fatigueScoreTextUI.text = FATIGUE_PREFIX + value; }
     }
 
 
@@ -185,7 +190,7 @@ public class UIManager : MonoBehaviour
     public void UpdateTimeDisplay(float minutes) { if (timeDisplayText != null) { TimeSpan time = TimeSpan.FromMinutes(minutes); timeDisplayText.text = $"Time: {time.Hours:D2}:{time.Minutes:D2}"; } }
     private void UpdateMultiplierDisplay(float multiplier) { if (multiplierDisplayText != null) { multiplierDisplayText.text = $"Multiplier: {multiplier:F1}x"; } }
 
-    void OnTemperatureChanged(string value) { if (float.TryParse(value, out float v)) { weather.SetTemperature(v); TempText = v.ToString("F1") + "°∆C"; } else { temperatureInput.text = weather.TemperatureCelcius.ToString("F1"); } }
+    void OnTemperatureChanged(string value) { if (float.TryParse(value, out float v)) { weather.SetTemperature(v); TempText = v.ToString("F1") + "¬∞C"; } else { temperatureInput.text = weather.TemperatureCelcius.ToString("F1"); } }
     void OnHumidityChanged(string value) { if (float.TryParse(value, out float v)) weather.SetHumidity(v); else { humidityInput.text = weather.Humidity.ToString("F1"); } }
     void OnSoleTypeChanged(int index) { character.ChangeFootwearType((FootWear.SoleType)index); }
     void OnWeatherChanged(int index) { string w = weatherDropdown.options[index].text; weather.SetCurrentCondition(w); WeatherText = w; }

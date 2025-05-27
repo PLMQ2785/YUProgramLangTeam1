@@ -1,30 +1,30 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public enum Gender { Male, Female }
 
-[System.Serializable] // ÀÎ½ºÆåÅÍ¿¡¼­ Character ½ºÅ©¸³Æ®¿¡ Ç¥½ÃµÇµµ·Ï ÇÔ
+[System.Serializable] // ì¸ìŠ¤í™í„°ì—ì„œ Character ìŠ¤í¬ë¦½íŠ¸ì— í‘œì‹œë˜ë„ë¡ í•¨
 public class FatigueCalculator
 {
-    [Header("Calculation Coefficients (Á¶Á¤ ÇÊ¿ä)")]
-    [Tooltip("°æ»çµµ °è¼ö")]
+    [Header("Calculation Coefficients (ì¡°ì • í•„ìš”)")]
+    [Tooltip("ê²½ì‚¬ë„ ê³„ìˆ˜")]
     public float k_slope = 0.1f;
-    [Tooltip("±â¿Â °è¼ö (21µµ ±âÁØ)")]
+    [Tooltip("ê¸°ì˜¨ ê³„ìˆ˜ (21ë„ ê¸°ì¤€)")]
     public float k_temp = 0.005f;
-    [Tooltip("½Àµµ °è¼ö")]
+    [Tooltip("ìŠµë„ ê³„ìˆ˜")]
     public float k_humid = 0.002f;
 
-    [Header("Fatigue Formula Weights (Á¶Á¤ ÇÊ¿ä)")]
-    [Tooltip("±â¿Â °¡ÁßÄ¡")]
+    [Header("Fatigue Formula Weights (ì¡°ì • í•„ìš”)")]
+    [Tooltip("ê¸°ì˜¨ ê°€ì¤‘ì¹˜")]
     public float w3_Temp = 1.0f;
-    [Tooltip("½Àµµ °¡ÁßÄ¡")]
+    [Tooltip("ìŠµë„ ê°€ì¤‘ì¹˜")]
     public float w4_Humid = 1.0f;
-    [Tooltip("°æ»çµµ °¡ÁßÄ¡")]
+    [Tooltip("ê²½ì‚¬ë„ ê°€ì¤‘ì¹˜")]
     public float w5_Slope = 1.5f;
 
-    /// BMI (Ã¼Áú·® Áö¼ö)¸¦ °è»ê.
-    /// weightKg ¸ö¹«°Ô (kg)
-    /// heightCm Å° (cm)
-    /// ->BMI °ª
+    /// BMI (ì²´ì§ˆëŸ‰ ì§€ìˆ˜)ë¥¼ ê³„ì‚°.
+    /// weightKg ëª¸ë¬´ê²Œ (kg)
+    /// heightCm í‚¤ (cm)
+    /// ->BMI ê°’
     public float CalculateBMI(float weightKg, float heightCm)
     {
         if (heightCm <= 0) return 0;
@@ -32,42 +32,42 @@ public class FatigueCalculator
         return weightKg / (heightM * heightM);
     }
 
-    /// BMR (±âÃÊ ´ë»ç·®)À» Mifflin-St Jeor °ø½ÄÀ¸·Î °è»ê.
-    /// weightKg ¸ö¹«°Ô (kg)
-    /// heightCm Å° (cm)
-    /// age ³ªÀÌ
-    /// gender ¼ºº°
-    /// ->BMR °ª
+    /// BMR (ê¸°ì´ˆ ëŒ€ì‚¬ëŸ‰)ì„ Mifflin-St Jeor ê³µì‹ìœ¼ë¡œ ê³„ì‚°. ê¸°ë³¸ ìˆ˜ì‹ ì œê³µ -> íŒ€ì› ì´ìš°í˜
+    /// weightKg ëª¸ë¬´ê²Œ (kg)
+    /// heightCm í‚¤ (cm)
+    /// age ë‚˜ì´
+    /// gender ì„±ë³„
+    /// ->BMR ê°’
     public float CalculateBMR(float weightKg, float heightCm, int age, Gender gender)
     {
         float bmr = (10f * weightKg) + (6.25f * heightCm) - (5f * age);
         return gender == Gender.Male ? bmr + 5f : bmr - 161f;
     }
 
-    /// °æ»çµµ¸¦ ¶óµğ¾È ´ÜÀ§·Î °è»êÇÕ´Ï´Ù.
-    /// deltaH ¼öÁ÷ ÀÌµ¿ °Å¸®
-    /// deltaD ¼öÆò ÀÌµ¿ °Å¸®
-    /// ->°æ»çµµ (¶óµğ¾È)
+    /// ê²½ì‚¬ë„ë¥¼ ë¼ë””ì•ˆ ë‹¨ìœ„ë¡œ ê³„ì‚°í•©ë‹ˆë‹¤.
+    /// deltaH ìˆ˜ì§ ì´ë™ ê±°ë¦¬
+    /// deltaD ìˆ˜í‰ ì´ë™ ê±°ë¦¬
+    /// ->ê²½ì‚¬ë„ (ë¼ë””ì•ˆ)
     public float CalculateSlopeAngle(float deltaH, float deltaD)
     {
         return (deltaD > 0.001f) ? Mathf.Atan(deltaH / deltaD) : 0f;
     }
 
-    /// ÃÖÁ¾ ÇÇ·Îµµ Á¡¼ö¸¦ °è»ê. (0-100 ½ºÄÉÀÏ¸µ ÇÊ¿ä)
-    /// character Ä³¸¯ÅÍ µ¥ÀÌÅÍ
-    /// weather ³¯¾¾ µ¥ÀÌÅÍ
-    /// slopeAngleRad ÇöÀç °æ»çµµ (¶óµğ¾È)
-    /// intensityFactor È°µ¿ °­µµ (0-1+)
-    /// durationMinutes È°µ¿ Áö¼Ó ½Ã°£ (ºĞ)
-    /// -> °è»êµÈ ÇÇ·Îµµ Á¡¼ö (½ºÄÉÀÏ¸µ Àü)
+    /// ìµœì¢… í”¼ë¡œë„ ì ìˆ˜ë¥¼ ê³„ì‚°. (0-100 ìŠ¤ì¼€ì¼ë§ í•„ìš”)
+    /// character ìºë¦­í„° ë°ì´í„°
+    /// weather ë‚ ì”¨ ë°ì´í„°
+    /// slopeAngleRad í˜„ì¬ ê²½ì‚¬ë„ (ë¼ë””ì•ˆ)
+    /// intensityFactor í™œë™ ê°•ë„ (0-1+)
+    /// durationMinutes í™œë™ ì§€ì† ì‹œê°„ (ë¶„)
+    /// -> ê³„ì‚°ëœ í”¼ë¡œë„ ì ìˆ˜ (ìŠ¤ì¼€ì¼ë§ ì „)
     public float CalculateFatigueScore(Character character, Weather weather, float slopeAngleRad, float intensityFactor, float durationMinutes)
     {
 
         float bmi = CalculateBMI(character.Weight, character.Height);
         float bmr = CalculateBMR(character.Weight, character.Height, character.Age, character.CharacterGender);
 
-        // SlopeAngleÀ» µµ(Degree)·Î º¯È¯ÇÏ¿© »ç¿ëÇÒ ¼öµµ ÀÖÁö¸¸, °ø½Ä¿¡ µû¶ó ¶óµğ¾È »ç¿ë °¡´É
-        float slopeFactor = k_slope * slopeAngleRad; // ¶óµğ¾È »ç¿ë ¿¹½Ã
+        // SlopeAngleì„ ë„(Degree)ë¡œ ë³€í™˜í•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ë„ ìˆì§€ë§Œ, ê³µì‹ì— ë”°ë¼ ë¼ë””ì•ˆ ì‚¬ìš© ê°€ëŠ¥
+        float slopeFactor = k_slope * slopeAngleRad; // ë¼ë””ì•ˆ ì‚¬ìš© ì˜ˆì‹œ
         float tempFactor = k_temp * Mathf.Pow(weather.TemperatureCelcius - 21f, 2);
         float humidityFactor = k_humid * weather.Humidity;
 
@@ -79,10 +79,10 @@ public class FatigueCalculator
                       (w5_Slope * slopeFactor) +
                       (0.694f * intensityFactor) +
                       (0.0092f * character.Age) +
-                      (0.087f * durationMinutes); // durationMinutes -> durationMinutes / 60.0f (½Ã°£ ´ÜÀ§) µîÀ¸·Î Á¶Á¤ °¡´É
+                      (0.087f * durationMinutes); // durationMinutes -> durationMinutes / 60.0f (ì‹œê°„ ë‹¨ìœ„) ë“±ìœ¼ë¡œ ì¡°ì • ê°€ëŠ¥
 
-        // °è»êµÈ Á¡¼ö¸¦ 0-100 »çÀÌ·Î ½ºÄÉÀÏ¸µÇÏ°Å³ª Å¬·¥ÇÎÇÏ´Â ·ÎÁ÷ Ãß°¡ ÇÊ¿ä ÇÒ ¼ö ÀÖÀ½
+        // ê³„ì‚°ëœ ì ìˆ˜ë¥¼ 0-100 ì‚¬ì´ë¡œ ìŠ¤ì¼€ì¼ë§ í•„ìš”í•  ìˆ˜ ìˆëŠ”ë°, ì¼ë‹¨... ê·¸ëƒ¥ ì“°ê³  ë°˜í™˜ê°’ì„ 0-100ìœ¼ë¡œ í•´ë‘ 
 
-        return Mathf.Max(0, score); // ÃÖ¼Ò 0Á¡ º¸Àå
+        return Mathf.Max(0, score); // ìµœì†Œ 0ì  ë³´ì¥
     }
 }

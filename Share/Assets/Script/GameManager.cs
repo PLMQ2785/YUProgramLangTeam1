@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private InputManager inputManager;
     [SerializeField] private WeatherController weatherController;
-    [SerializeField] private CharacterController characterController;
+    [SerializeField] private CharacterControl characterController;
     [SerializeField] private GameTime gameTime;
     [SerializeField] private Weather weather;
     [SerializeField] Character character;
@@ -14,11 +14,11 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; } // Singleton instance
 
 
-    // ´Ù¸¥ ÄÚµå¿¡¼­ ¸Å´ÏÀú¿¡ Á¢±ÙÇÏ±â À§ÇÑ public getter
+    // ë‹¤ë¥¸ ì½”ë“œì—ì„œ ë§¤ë‹ˆì €ì— ì ‘ê·¼í•˜ê¸° ìœ„í•œ public getter
     public UIManager GetUIManager() => uiManager;
     public InputManager GetInputManager() => inputManager;
     public WeatherController GetWeatherController() => weatherController;
-    public CharacterController GetCharacterController() => characterController;
+    public CharacterControl GetCharacterController() => characterController;
     public GameTime GetGameTime() => gameTime;
     public Weather GetWeather() => weather;
     public Character GetCharacter() => character;

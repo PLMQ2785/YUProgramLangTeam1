@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.TextCore.Text;
 
 [System.Serializable]
@@ -7,6 +7,7 @@ public class StaminaCalculator
     public int CalculateStaminaCost(Character character, string actionType, float actionIntensity = 1.0f)
     {
         int baseCost = 0;
+        //ì¼ë‹¨ ì—¬ëŸ¬ê°œ ë§Œë“¤ì–´ë‘ 
         switch (actionType.ToLower())
         {
             case "run":
@@ -25,10 +26,11 @@ public class StaminaCalculator
 
         float finalCost = baseCost * actionIntensity;
 
+        //ì—†ì„ë•Œ ì—ëŸ¬ ìƒê²¨ì„œ ì¶”ê°€
         if (character != null)
         {
             if (character.IsOverloaded()) finalCost *= 1.5f;
-            // Àåºñ, ¹öÇÁ/µğ¹öÇÁ µî¿¡ µû¸¥ ½ºÅÂ¹Ì³ª ºñ¿ë °¡°¨ ·ÎÁ÷
+            // ì¥ë¹„, ë²„í”„/ë””ë²„í”„ ë“±ì— ë”°ë¥¸ ìŠ¤íƒœë¯¸ë‚˜ ë¹„ìš© ê°€ê° ë¡œì§
         }
 
         return Mathf.Max(0, Mathf.RoundToInt(finalCost));
@@ -36,12 +38,12 @@ public class StaminaCalculator
 
     public float CalculateStaminaRegen(Character character)
     {
-        float baseRegen = 5f; // ÃÊ´ç ½ºÅÂ¹Ì³ª È¸º¹·®
+        float baseRegen = 5f; // ì´ˆë‹¹ ìŠ¤íƒœë¯¸ë‚˜ íšŒë³µëŸ‰
         if (character != null && character.CurrentHP < character.MaxHP * 0.3f)
         {
-            baseRegen *= 0.5f; // Ã¼·ÂÀÌ ³·À¸¸é È¸º¹ ¼Óµµ °¨¼Ò
+            baseRegen *= 0.5f; // ì²´ë ¥ì´ ë‚®ìœ¼ë©´ íšŒë³µ ì†ë„ ê°ì†Œ
         }
-        // ÈŞ½Ä »óÅÂ, ¹öÇÁ µî¿¡ µû¸¥ È¸º¹·® Á¶Àı
+        // íœ´ì‹ ìƒíƒœ, ë²„í”„ ë“±ì— ë”°ë¥¸ íšŒë³µëŸ‰ ì¡°ì ˆ
         return baseRegen;
     }
 }

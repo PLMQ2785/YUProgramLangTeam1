@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 
 [System.Serializable]
@@ -7,7 +7,7 @@ public class Equipment
     public string itemName = "Generic Equipment";
     public int maxDurability = 100;
     public int durability;
-    // public float weight; // Àåºñ ¹«°Ô ¼Ó¼º Ãß°¡ °í·Á
+    // public float weight; // ì¥ë¹„ ë¬´ê²Œ ì†ì„± ì¶”ê°€ ê³ ë ¤
 
     public Equipment()
     {
@@ -22,7 +22,7 @@ public class Equipment
         // weight = itemWeight;
     }
 
-    public virtual void Use(int amount = 1) // int·Î º¯°æ (³»±¸µµ ºñ¿ë °è»ê °á°ú°¡ int)
+    public virtual void Use(int amount = 1) // intë¡œ ë³€ê²½ (ë‚´êµ¬ë„ ë¹„ìš© ê³„ì‚° ê²°ê³¼ê°€ int)
     {
         durability -= amount;
         if (durability < 0) durability = 0;

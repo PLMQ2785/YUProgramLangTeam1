@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class Weather : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class Weather : MonoBehaviour
     {
         currentCondition = newCondition;
         Debug.Log($"Weather condition changed to: {newCondition}");
-        // ³¯¾¾ º¯°æ¿¡ µû¸¥ Ãß°¡ ·ÎÁ÷ ±¸ÇöÀ» ¿©±â¿¡
+        // ë‚ ì”¨ ë³€ê²½ì— ë”°ë¥¸ ì¶”ê°€ ë¡œì§ êµ¬í˜„ì„ ì—¬ê¸°ì—
     }
 
     public void SetTemperature(float temp)

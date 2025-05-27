@@ -1,13 +1,13 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 
 public class GameTime : MonoBehaviour
 {
-    ////private float timeOfDayMinutes = 0; // ½ÃÀÛ½Ã°£
-    //[SerializeField, Range(0, 1440), Header("Time Settings"), Tooltip("ÇöÀç ½Ã°£ (ºĞ ´ÜÀ§, 0-1439)")]
-    //private float TimeOfDay = 0f; //½ÃÀÛ½Ã°£
+    ////private float timeOfDayMinutes = 0; // ì‹œì‘ì‹œê°„
+    //[SerializeField, Range(0, 1440), Header("Time Settings"), Tooltip("í˜„ì¬ ì‹œê°„ (ë¶„ ë‹¨ìœ„, 0-1439)")]
+    //private float TimeOfDay = 0f; //ì‹œì‘ì‹œê°„
 
-    //[SerializeField, Tooltip("½Ã°£ ¹è¼Ó")]
+    //[SerializeField, Tooltip("ì‹œê°„ ë°°ì†")]
     //private float TimeMultiplier = 1f;
 
     //private const float inverseDayLength = 1f / 1440f;
@@ -39,10 +39,10 @@ public class GameTime : MonoBehaviour
 
     //public float GetInverseDayLength() => inverseDayLength;
 
-    [SerializeField, Range(0, 1440), Header("Time Settings"), Tooltip("ÇöÀç ½Ã°£ (ºĞ ´ÜÀ§, 0-1439)")]
+    [SerializeField, Range(0, 1440), Header("Time Settings"), Tooltip("í˜„ì¬ ì‹œê°„ (ë¶„ ë‹¨ìœ„, 0-1439)")]
     private float timeOfDayMinutes = 0f;
 
-    [SerializeField, Tooltip("½Ã°£ ÁøÇà ¼Óµµ ¹èÀ²")]
+    [SerializeField, Tooltip("ì‹œê°„ ì§„í–‰ ì†ë„ ë°°ìœ¨")]
     private float timeMultiplier = 1f;
 
     private UIManager _uiManager;

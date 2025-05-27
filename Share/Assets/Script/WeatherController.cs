@@ -1,24 +1,24 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 
 public class WeatherController : MonoBehaviour
 {
-    [Header("°ü¸® ¿ÀºêÁ§Æ®")]
-    [SerializeField] private Light DirectionalLight; // ÅÂ¾ç
-    [SerializeField] private Light moonLight; // ´Ş (¼±ÅÃ»çÇ×)
-    [SerializeField] private GameTime gameTime; // GameTime ½ºÅ©¸³Æ® ÂüÁ¶
-    [SerializeField] private Weather currentWeather; // Weather ½ºÅ©¸³Æ® ÂüÁ¶
-    private List<Light> SpotLights = new List<Light>();
+    [Header("ê´€ë¦¬ ì˜¤ë¸Œì íŠ¸")]
+    [SerializeField] private Light DirectionalLight; // íƒœì–‘
+    [SerializeField] private Light moonLight; // ë‹¬ (ì„ íƒì‚¬í•­)
+    [SerializeField] private GameTime gameTime; // GameTime ìŠ¤í¬ë¦½íŠ¸ ì°¸ì¡°
+    [SerializeField] private Weather currentWeather; // Weather ìŠ¤í¬ë¦½íŠ¸ ì°¸ì¡°
+    private List<Light> SpotLights = new List<Light>(); //Sceneì— ë°°ì¹˜ëœ ì¡°ëª… ëª©ë¡
 
-    [Header("±¤¿ø ÇÁ¸®¼Â")]
+    [Header("ê´‘ì› í”„ë¦¬ì…‹")]
     [SerializeField] private LightPreset DayNightPreset;
-    [SerializeField] private LightPreset LampPreset; // ÀÎ°ø Á¶¸í¿ë (¼±ÅÃ»çÇ×)
+    [SerializeField] private LightPreset LampPreset;
 
-    [Header("¼³Á¤")]
-    //[SerializeField, Range(0, 1440), Header("Modifiers"), Tooltip("ÇöÀç ½Ã°£")] private float TimeOfDay;
-    [SerializeField, Tooltip("ÅÂ¾ç °æ·ÎÀÇ YÃà È¸Àü°ª")] private float SunDirection = 80.5f;                  //¿©¸§ 80.5, °Ü¿ï 34.5, º½/°¡À» 57.5 (±Ù»çÄ¡)
-    //[SerializeField, Tooltip("½Ã°£ ¹è¼Ó")] private float TimeMultiplier = 1;
+    [Header("ì„¤ì •")]
+    //[SerializeField, Range(0, 1440), Header("Modifiers"), Tooltip("í˜„ì¬ ì‹œê°„")] private float TimeOfDay;
+    [SerializeField, Tooltip("íƒœì–‘ ê²½ë¡œì˜ Yì¶• íšŒì „ê°’")] private float SunDirection = 80.5f;                  //ì—¬ë¦„ 80.5, ê²¨ìš¸ 34.5, ë´„/ê°€ì„ 57.5 (ê·¼ì‚¬ì¹˜)
+    //[SerializeField, Tooltip("ì‹œê°„ ë°°ì†")] private float TimeMultiplier = 1;
     [SerializeField] private bool ControlLights = true;
 
 
@@ -37,7 +37,7 @@ public class WeatherController : MonoBehaviour
 
     void Start()
     {
-        if (gameTime == null) // GM¿¡¼­ Initialize È£Ãâ ¾ÈÇßÀ» °æ¿ì..
+        if (gameTime == null) // GMì—ì„œ Initialize í˜¸ì¶œ ì•ˆí–ˆì„ ê²½ìš°..
         {
             Init();
         }
@@ -47,7 +47,7 @@ public class WeatherController : MonoBehaviour
     {
         if (ControlLights)
         {
-            //ÀÌÀü¿¡ ±¸ÇöÇß´ø ÄÚµå, DeprecatedµÇ¾úÀ¸¹Ç·Î ´ëÃ¼
+            //ì´ì „ì— êµ¬í˜„í–ˆë˜ ì½”ë“œ, Deprecatedë˜ì—ˆìœ¼ë¯€ë¡œ ëŒ€ì²´
             //Light[] lights = FindObjectsOfType<Light>();
             Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
 
@@ -69,34 +69,32 @@ public class WeatherController : MonoBehaviour
         }
     }
 
-    /// ÇÁ¸®¼Â ¾øÀ¸¸é ½ÇÇà¾ÈµÊ
-    /// ¸Å ÇÁ·¹ÀÓ ¸¶´Ù, °ÔÀÓ ½Ã°£°ú ½Ã°£¹è¼Ó¿¡ µû¶ó °è»êÇÔ (24 x 60 = 1440)
-    /// UpdateLighting¿¡ Àü´ŞµÈ ½Ã°£ ºñÀ²¿¡ µû¶ó, ÇöÀç ¾ÀÀÇ ·»´õ¸µ ¼¼ÆÃ°ú Á¶¸í »ö»óÀ» ÇÁ¸®¼Â¿¡ ¸Â°Ô ¼³Á¤ÇÔ.
+    // í”„ë¦¬ì…‹ ì—†ìœ¼ë©´ ì‹¤í–‰ì•ˆë¨
+    // ë§¤ í”„ë ˆì„ ë§ˆë‹¤, ê²Œì„ ì‹œê°„ê³¼ ì‹œê°„ë°°ì†ì— ë”°ë¼ ê³„ì‚°í•¨ (24 x 60 = 1440)
+    // UpdateLightingì— ì „ë‹¬ëœ ì‹œê°„ ë¹„ìœ¨ì— ë”°ë¼, í˜„ì¬ ì”¬ì˜ ë Œë”ë§ ì„¸íŒ…ê³¼ ì¡°ëª… ìƒ‰ìƒì„ í”„ë¦¬ì…‹ì— ë§ê²Œ ì„¤ì •í•¨.
 
     void Update()
     {
-        if (DayNightPreset == null || gameTime == null || currentWeather == null)
-            return;
 
         //TimeOfDay = TimeOfDay + (Time.deltaTime * TimeMultiplier);
         //TimeOfDay = TimeOfDay % 1440;
         //UpdateLighting(gameTime.GetLightUpdateTime());
         UpdateLighting(gameTime.TimeOfDayNormalized);
 
-        // UI ¾÷µ¥ÀÌÆ® ¿¹½Ã (UIManager¸¦ Ã£¾Æ Á÷Á¢ ¾÷µ¥ÀÌÆ®)
+        // UI ì—…ë°ì´íŠ¸ ì˜ˆì‹œ (UIManagerë¥¼ ì°¾ì•„ ì§ì ‘ ì—…ë°ì´íŠ¸)
         //UIManager uiManager = FindObjectOfType<UIManager>();
         UIManager uiManager = FindFirstObjectByType<UIManager>();
     }
 
-    /// ½Ã°£ ºñÀ²¿¡ µû¶ó, ÇöÀç ¾ÀÀÇ ·»´õ¸µ ¼¼ÆÃ°ú Á¶¸í »ö»óÀ» ÇÁ¸®¼Â¿¡ ¸Â°Ô ¼³Á¤ÇÔ.
-    /// Ãß°¡·Î, ÇöÀç ½Ã°£¿¡ µû¶ó ¹æÇâ¼º Á¶¸í(ÅÂ¾ç)À» È¸Àü½ÃÅ´
+    // ì‹œê°„ ë¹„ìœ¨ì— ë”°ë¼, í˜„ì¬ ì”¬ì˜ ë Œë”ë§ ì„¸íŒ…ê³¼ ì¡°ëª… ìƒ‰ìƒì„ í”„ë¦¬ì…‹ì— ë§ê²Œ ì„¤ì •í•¨.
+    // ì¶”ê°€ë¡œ, í˜„ì¬ ì‹œê°„ì— ë”°ë¼ ë°©í–¥ì„± ì¡°ëª…(íƒœì–‘)ì„ íšŒì „ì‹œí‚´
     private void UpdateLighting(float timePercent)
     {
         RenderSettings.ambientLight = DayNightPreset.AmbientColour.Evaluate(timePercent);
         RenderSettings.fogColor = DayNightPreset.FogColour.Evaluate(timePercent);
-        // ½Ã°£¿¡ µû¶ó ¾È°³ È°¼ºÈ­/ºñÈ°¼ºÈ­ ¹× ¹Ğµµ Á¶Àı ·ÎÁ÷ Ãß°¡ °¡´É
+        // ì‹œê°„ì— ë”°ë¼ ì•ˆê°œ í™œì„±í™”/ë¹„í™œì„±í™” ë° ë°€ë„ ì¡°ì ˆ ë¡œì§ ì¶”ê°€ ê°€ëŠ¥
 
-        //½Ã°£ ºñÀ²¿¡ µû¶ó ¹æÇâ¼º Á¶¸í(ÅÂ¾ç)À» È¸Àü½ÃÅ´
+        //ì‹œê°„ ë¹„ìœ¨ì— ë”°ë¼ ë°©í–¥ì„± ì¡°ëª…(íƒœì–‘)ì„ íšŒì „ì‹œí‚´, ì—†ìœ¼ë©´ ìƒ‰ì´ ì ìš©ì´ ì•ˆë˜ê±°ë‚˜ ì˜¤ë¥˜ê°€ ë‚˜ì„œ null check..
         if (DirectionalLight != null)
         {
             if (DirectionalLight.enabled == true)
@@ -112,13 +110,13 @@ public class WeatherController : MonoBehaviour
             {
                 if (lamp != null && lamp.isActiveAndEnabled && lamp.shadows != LightShadows.None)
                 {
-                    // ½Ã°£¿¡ µû¶ó ÀÎ°ø Á¶¸í »ö»ó/°­µµ Á¶Àı
+                    // ì‹œê°„ì— ë”°ë¼ ì¸ê³µ ì¡°ëª… ìƒ‰ìƒ/ê°•ë„ ì¡°ì ˆ
                     lamp.color = LampPreset.DirectionalColour.Evaluate(timePercent);
                 }
             }
         }
 
-        //°¢ ½ºÆÌ Á¶¸íÀ» È®ÀÎÇÏ°í, È°¼ºÈ­µÇ¾î ÀÖ´ÂÁö È®ÀÎÇÑ ÈÄ »ö»óÀ» ¼³Á¤
+        //ê° ìŠ¤íŒŸ ì¡°ëª…ì„ í™•ì¸í•˜ê³ , í™œì„±í™”ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸í•œ í›„ ìƒ‰ìƒì„ ì„¤ì •
         foreach (Light lamp in SpotLights)
         {
             if (lamp != null)
@@ -132,7 +130,7 @@ public class WeatherController : MonoBehaviour
 
     }
 
-    //¿©¸§ 80.5, °Ü¿ï 34.5, º½/°¡À» 57.5 (±Ù»çÄ¡)
+    //ì—¬ë¦„ 80.5, ê²¨ìš¸ 34.5, ë´„/ê°€ì„ 57.5 (ê·¼ì‚¬ì¹˜)
     public void SetSunAzimuthForSeason(string season)
     {
         switch (season.ToLower())

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [System.Serializable]
 public class FootWear : Equipment
@@ -20,6 +20,6 @@ public class FootWear : Equipment
     public override void Use(int amount = 1)
     {
         base.Use(amount);
-        // ½Å¹ß »ç¿ë ·ÎÁ÷
+        // ì‹ ë°œ ì‚¬ìš© ë¡œì§
     }
 }

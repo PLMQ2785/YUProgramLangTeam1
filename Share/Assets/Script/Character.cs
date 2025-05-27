@@ -38,7 +38,7 @@ public class Character : MonoBehaviour
     [SerializeField] private bool isOverloadedFlag = false;
 
     [Header("Dependencies")]
-    private UIManager uiManager;
+    private UIManager _uiManager;
 
     private Weather weather;
 
@@ -72,6 +72,9 @@ public class Character : MonoBehaviour
 
     void Start()
     {
+        _uiManager = GameManager.Instance.GetUIManager(); // GameManager를 통해 UIManager 접근
+        _gameTime = GameManager.Instance.GetGameTime(); // GameManager를 통해 GameTime 접근
+
         previousPosition = transform.position;
 
         currentHP = maxHP;
@@ -84,12 +87,11 @@ public class Character : MonoBehaviour
         weather = FindFirstObjectByType<Weather>();
 
 
-        //기본 신발 장착
-        EquipFootWear(new FootWear("Boots1", 50, 30, FootWear.SoleType.Normal));
+        //기본 신발 장착, 여기서 지정한 내구도 대로 따라갑니다
+        EquipFootWear(new FootWear("Boots1", 100, 100, FootWear.SoleType.Normal));
         UpdateCurrentLoad();
 
-        uiManager = GameManager.Instance.GetUIManager(); // GameManager를 통해 UIManager 접근
-        _gameTime = GameManager.Instance.GetGameTime(); // GameManager를 통해 GameTime 접근
+
     }
 
     void Update()
@@ -155,8 +157,9 @@ public class Character : MonoBehaviour
         currentFatigue = Mathf.Clamp(newFatigue, 0f, 100f);
 
         Debug.Log($"Fatigue Updated: {currentFatigue:F2}, NewFatigue {newFatigue}");
-        // 피로도에 따른 효과 적용 (스태미나 최대치 감소, 이동 속도 감소 등)
+
         // UI 업데이트
+        _uiManager.FatigueScoreText = currentFatigue.ToString("F1");
     }
 
     public void Move(Vector3 direction, float speedMultiplier = 1.0f, bool isGrounded = false)
@@ -169,7 +172,7 @@ public class Character : MonoBehaviour
         }
         if (equippedFootWear != null && direction.magnitude > 0.1f && isGrounded)
         {
-            UseEquipment(equippedFootWear, "walkstep", 0.05f * speedMultiplier * (isRunning ? 2f : 1f));
+            UseEquipment(equippedFootWear, "walkstep", 0.05f * speedMultiplier * (isRunning ? 0.05f : 0.01f));
         }
     }
 
@@ -186,6 +189,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    //일단 만들어는 둠
     public void TakeAction(string actionType, float intensity = 1.0f)
     {
         int cost = CalcStaminaCost(actionType, intensity);
@@ -243,14 +247,14 @@ public class Character : MonoBehaviour
 
         if (gameObject.CompareTag("Player"))
         {
-            //UIManager uiManager = FindObjectOfType<UIManager>(); // GameManager를 통해 접근 권장
-            uiManager?.UpdateDurabilitySlider(item.durability, item.maxDurability);
+            //UIManager uiManager = FindObjectOfType<UIManager>(); 
+            _uiManager?.UpdateDurabilitySlider(item.durability, item.maxDurability);
         }
     }
 
     public bool IsOverloaded()
     {
-        float maxCarryWeight = weight * 1.5f; // 예: 기본 몸무게의 1.5배까지 운반 가능
+        float maxCarryWeight = weight * 1.5f; // 예: 기본 몸무게의 1.5배까지 운반 가능, 필요할까?..
         return TotalWeight > maxCarryWeight;
     }
 
@@ -287,11 +291,15 @@ public class Character : MonoBehaviour
         if (newFootWear != null)
         {
             Debug.Log($"Equipped: {newFootWear.itemName}");
+            equippedFootWear = newFootWear;
+            _uiManager.UpdateDurabilitySlider(newFootWear.durability, newFootWear.maxDurability);
         }
         else
         {
             Debug.Log("FootWear unequipped.");
         }
+
+
         UpdateCurrentLoad();
     }
 
@@ -313,7 +321,7 @@ public class Character : MonoBehaviour
             Debug.Log($"Footwear type changed to {newType}, Durability reset to {equippedFootWear.durability}.");
 
             // UI 업데이트 호출
-            uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
+            _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
         }
         else
         {

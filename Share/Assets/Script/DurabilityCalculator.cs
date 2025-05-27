@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 
 [System.Serializable]
@@ -7,7 +7,7 @@ public class DurabilityCalculator
     public int CalculateDurabilityCost(Equipment equipment, string usageContext, float intensity = 1.0f)
     {
 
-        float baseDamage = 0.1f; // ±âº» ³»±¸µµ ¼Ò¸ğ·®
+        float baseDamage = 0.1f; // ê¸°ë³¸ ë‚´êµ¬ë„ ì†Œëª¨ëŸ‰
 
         if (equipment is FootWear footwear)
         {
@@ -16,7 +16,7 @@ public class DurabilityCalculator
                 "walkstep" => 1,
                 //"runstep" => 2,
                 //"jump" => 3,
-                _ => 1 // ±âº»°ª
+                _ => 1 // ê¸°ë³¸ê°’
             };
             if (footwear.soleType == FootWear.SoleType.HeavyDuty) baseDamage = Mathf.Max(1, baseDamage / 2);
 
@@ -27,12 +27,12 @@ public class DurabilityCalculator
             //    if (footwear.soleType == FootWear.SoleType.HeavyDuty) baseDamage = Mathf.Max(1, baseDamage / 2);
             //}
         }
-        // ´Ù¸¥ Àåºñ Á¾·ù ¹× »ç¿ë »óÈ²¿¡ µû¸¥ ³»±¸µµ ¼Ò¸ğ·® °è»ê
+        // ë‹¤ë¥¸ ì¥ë¹„ ì¢…ë¥˜ ë° ì‚¬ìš© ìƒí™©ì— ë”°ë¥¸ ë‚´êµ¬ë„ ì†Œëª¨ëŸ‰ ê³„ì‚°
 
         float finalDamage = baseDamage * intensity;
 
         //return Mathf.Max(0, Mathf.RoundToInt(finalDamage));                                                       
-        // 1º¸´Ù ÀÛÀ¸¸é 0, ¾Æ´Ï¸é ¿Ã¸²ÇÏ¿© 1 ÀÌ»ó Á¤¼ö ¹İÈ¯ (¸Å¹ø ´âÁö ¾Ê°Ô)
+        // 1ë³´ë‹¤ ì‘ìœ¼ë©´ 0, ì•„ë‹ˆë©´ ì˜¬ë¦¼í•˜ì—¬ 1 ì´ìƒ ì •ìˆ˜ ë°˜í™˜ (ë§¤ë²ˆ ë‹³ì§€ ì•Šê²Œ)
         return (finalDamage < 1f) ? (Random.value < finalDamage ? 1 : 0) : Mathf.CeilToInt(finalDamage);
     }
 }

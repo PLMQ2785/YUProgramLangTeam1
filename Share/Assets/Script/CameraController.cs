@@ -1,4 +1,4 @@
-using UnityEditor;
+ï»¿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 
@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     public Transform cameraFollowTarget;
 
     [Header("References")]
-    [SerializeField] private InputManager inputManager; // GameManager ÅëÇØ ÇÒ´ç¹Ş°Å³ª ÀÎ½ºÆåÅÍ¿¡¼­ Á÷Á¢ ÇÒ´ç
+    [SerializeField] private InputManager inputManager; // GameManager í†µí•´ í• ë‹¹ë°›ê±°ë‚˜ ì¸ìŠ¤í™í„°ì—ì„œ ì§ì ‘ í• ë‹¹
 
     [Header("Settings")]
     [SerializeField] private float rotationSpeed = 200f;
@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
         mainCamera = Camera.main;
         if (mainCamera == null) Debug.LogError("Main Camera not found!");
 
-        // InputManager ÂüÁ¶ ¼³Á¤ (GameManager°¡ ÀÖ´Ù¸é GameManager¸¦ ÅëÇØ ¹Ş´Â °ÍÀÌ ÁÁÀ½)
+        // InputManager ì°¸ì¡° ì„¤ì •
         if (inputManager == null)
         {
             if (GameManager.Instance != null) inputManager = GameManager.Instance.GetInputManager();
@@ -35,9 +35,9 @@ public class CameraController : MonoBehaviour
         if (cameraAnchorPoint == null) Debug.LogError("Camera Anchor Point not assigned!");
         if (cameraFollowTarget == null) Debug.LogError("Camera Follow Target not assigned!");
 
-        // ÃÊ±â Ä«¸Ş¶ó °¢µµ ¼³Á¤
+        // ì´ˆê¸° ì¹´ë©”ë¼ ê°ë„ ì„¤ì •, ì´ì—ˆë˜ê²ƒ
         // currentXAngle = cameraAnchorPoint.localEulerAngles.x;
-        //Cursor.lockState = CursorLockMode.Locked; // ¸¶¿ì½º Ä¿¼­ ¼û±è
+        //Cursor.lockState = CursorLockMode.Locked; // ë§ˆìš°ìŠ¤ ì»¤ì„œ ìˆ¨ê¹€
         //Cursor.visible = false;
     }
 
@@ -55,8 +55,8 @@ public class CameraController : MonoBehaviour
         currentXAngle -= mouseYInput * rotationSpeed * UnityEngine.Time.deltaTime;
         currentXAngle = Mathf.Clamp(currentXAngle, minYAngle, maxYAngle);
 
-        // Ä«¸Ş¶ó ¾ŞÄ¿(º¸Åë ÇÃ·¹ÀÌ¾î ¸öÅëÀÇ ÀÏºÎ ¶Ç´Â Ä«¸Ş¶ó Àü¿ë È¸ÀüÃà)ÀÇ XÃà È¸ÀüÀ¸·Î »óÇÏ ½ÃÁ¡ Á¶Àı
-        // ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍÀÇ YÃà È¸Àü(ÁÂ¿ì È¸Àü)Àº CharacterController¿¡¼­ ´ã´çÇÏ°í, cameraAnchorPoint´Â ±× ÀÚ½ÄÀ¸·Î µû¶ó°¨
+        // ì¹´ë©”ë¼ ì•µì»¤(ë³´í†µ í”Œë ˆì´ì–´ ëª¸í†µì˜ ì¼ë¶€ ë˜ëŠ” ì¹´ë©”ë¼ ì „ìš© íšŒì „ì¶•)ì˜ Xì¶• íšŒì „ìœ¼ë¡œ ìƒí•˜ ì‹œì  ì¡°ì ˆ
+        // í”Œë ˆì´ì–´ ìºë¦­í„°ì˜ Yì¶• íšŒì „(ì¢Œìš° íšŒì „)ì€ CharacterControllerì—ì„œ ë‹´ë‹¹í•˜ê³ , cameraAnchorPointëŠ” ê·¸ ìì‹ìœ¼ë¡œ ë”°ë¼ê°
         cameraAnchorPoint.localEulerAngles = new Vector3(currentXAngle, cameraAnchorPoint.localEulerAngles.y, 0);
     }
 
