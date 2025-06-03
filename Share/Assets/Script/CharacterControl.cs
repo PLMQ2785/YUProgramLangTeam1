@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(BoxCollider))] // 또는 CapsuleCollider, 근데 미끄러지는거 보정이 귀찮아서 box로 했음
+[RequireComponent(typeof(CapsuleCollider))] // 또는 CapsuleCollider, 근데 미끄러지는거 보정이 귀찮아서 box로 했음
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Character))] // Character 데이터 컴포넌트 필수
 public class CharacterControl : MonoBehaviour
@@ -14,7 +14,7 @@ public class CharacterControl : MonoBehaviour
     [Header("Components")]
     private Character characterData;
     private Rigidbody playerRB;
-    private BoxCollider playerCollider; // 또는 CapsuleCollider
+    private CapsuleCollider playerCollider; // 또는 CapsuleCollider
     private Animator playerAnimator;
 
     [Header("Movement Settings")]
@@ -46,7 +46,7 @@ public class CharacterControl : MonoBehaviour
 
         characterData = GetComponent<Character>();
         playerRB = GetComponent<Rigidbody>();
-        playerCollider = GetComponent<BoxCollider>();
+        playerCollider = GetComponent<CapsuleCollider>();
         playerAnimator = GetComponent<Animator>();
 
         if (characterData == null) Debug.LogError("Character data component not found!");
@@ -210,15 +210,17 @@ public class CharacterControl : MonoBehaviour
         //        // 간단하게 라인으로 대체합니다.
         //#endif
 
-        // Y축 속도 확인 로직
-        if (playerRB.linearVelocity.y > 0.1f)
-        {
-            isGrounded = false;
-        }
-        else
-        {
-            isGrounded = hitGround;
-        }
+        isGrounded = hitGround;
+
+        //// Y축 속도 확인 로직
+        //if (playerRB.linearVelocity.y > 0.1f)
+        //{
+        //    isGrounded = false;
+        //}
+        //else
+        //{
+        //    isGrounded = hitGround;
+        //}
 
         // 예전에 필요할거 같아서 넣어놨는데 지금은 딱히 필요없을거 같음
         // 지면에 닿았고, 경사도 계산이 필요하다면 groundHitInfo.normal 사용 가능

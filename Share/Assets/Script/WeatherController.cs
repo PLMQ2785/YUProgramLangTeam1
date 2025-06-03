@@ -104,18 +104,6 @@ public class WeatherController : MonoBehaviour
             }
         }
 
-        if (LampPreset != null && ControlLights)
-        {
-            foreach (Light lamp in SpotLights)
-            {
-                if (lamp != null && lamp.isActiveAndEnabled && lamp.shadows != LightShadows.None)
-                {
-                    // 시간에 따라 인공 조명 색상/강도 조절
-                    lamp.color = LampPreset.DirectionalColour.Evaluate(timePercent);
-                }
-            }
-        }
-
         //각 스팟 조명을 확인하고, 활성화되어 있는지 확인한 후 색상을 설정
         foreach (Light lamp in SpotLights)
         {
