@@ -63,6 +63,8 @@ public class GameManager : MonoBehaviour
         characterController?.Init();
         uiManager?.Init();
 
+        Application.targetFrameRate = 60;
+
 
         //Debug.Log("Application Initialization Complete.");
 

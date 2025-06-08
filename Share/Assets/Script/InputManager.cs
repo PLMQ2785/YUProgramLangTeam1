@@ -9,11 +9,11 @@ public class InputManager : MonoBehaviour
     private const string MOUSE_X = "Mouse X";
     private const string MOUSE_Y = "Mouse Y";
 
-    private float horizontalInput;
-    private float verticalInput;
-    private float mouseXInput;
-    private float mouseYInput;
-    private bool jumpInput;
+    [SerializeField] private float horizontalInput;
+    [SerializeField] private float verticalInput;
+    [SerializeField] private float mouseXInput;
+    [SerializeField] private float mouseYInput;
+    [SerializeField] private bool jumpInput;
 
     public float HorizontalInputValue => horizontalInput;
     public float VerticalInputValue => verticalInput;

@@ -42,6 +42,9 @@ public class Character : MonoBehaviour
 
     private Weather weather;
 
+    private float fixedTerrainFactor = 1.1f;
+    private float totalDistanceKm = 0f; // 총 이동 거리(km)
+
     public int Age => age;
     public Gender CharacterGender => characterGender;
     public float Height => height;
@@ -55,6 +58,7 @@ public class Character : MonoBehaviour
     public FootWear EquippedFootWear => equippedFootWear;
     public float CurrentFatigue => currentFatigue;
     public float CurrentSlopeAngleRad => currentSlopeAngleRad;
+    public float TotalDistanceKm => totalDistanceKm;
 
     public void SetHeight(float h) { height = h; }
     public void SetWeight(float w) { weight = w; }
@@ -62,6 +66,12 @@ public class Character : MonoBehaviour
     public void SetGender(Gender g) { characterGender = g; }
     public FatigueCalculator GetFatigueCalculator() { return fatigueCalc; }
     public void UpdateSlopeAngle(float slopeRad) { currentSlopeAngleRad = slopeRad; }
+    public void SetCurrentLoad(float newLoad)
+    {
+        currentLoad = Mathf.Max(0, newLoad); // 하중이 음수 방지
+        isOverloadedFlag = IsOverloaded(); // 과적 상태를 계산.... 이긴 한데 굳이 필요할까 싶다
+        Debug.Log($"Current Load set to: {currentLoad}. Overloaded: {isOverloadedFlag}");
+    }
 
     private GameTime _gameTime;
 
@@ -88,7 +98,8 @@ public class Character : MonoBehaviour
 
 
         //기본 신발 장착, 여기서 지정한 내구도 대로 따라갑니다
-        EquipFootWear(new FootWear("Boots1", 100, 100, FootWear.SoleType.Normal));
+        //EquipFootWear(new FootWear("Boots1", 100, 100, FootWear.SoleType.Normal));
+        EquipFootWear(new FootWear("Boots1", 1250, 1250, FootWear.SoleType.Normal, 0.5f));
         UpdateCurrentLoad();
 
 
@@ -111,7 +122,7 @@ public class Character : MonoBehaviour
         activityDurationSeconds += gameDeltaTime;
         timeSinceLastFatigueUpdate += dt;
 
-        // 위치 변화 및 경사도, 강도 계산 (FixedUpdate에서 하는 것이 더 정확할 수 있음)
+        // 위치 변화 및 경사도, 강도 계산
         CalculateMovementDeltas();
 
         // 일정 주기마다 피로도 업데이트
@@ -130,20 +141,33 @@ public class Character : MonoBehaviour
         Vector3 currentPosition = transform.position;
         Vector3 deltaPosition = currentPosition - previousPosition;
 
+        float distanceDeltaMeters = deltaPosition.magnitude;
+
+        // --- 새로운 내구도 계산 로직 ---
+        if (distanceDeltaMeters > 0.001f && equippedFootWear != null)
+        {
+            float distanceDeltaKm = distanceDeltaMeters / 1000f;
+            totalDistanceKm += distanceDeltaKm;
+
+            // 앞으로 이걸로 호출할 것
+            //
+            float wearAmount = durabilityCalc.CalculateWearAmount(this, weather, distanceDeltaKm, fixedTerrainFactor) * 10f;
+            Debug.Log("WearAmount:" + wearAmount);
+
+            if (wearAmount > 0)
+            {
+                equippedFootWear.currentWear += wearAmount;
+                equippedFootWear.UpdateDurabilityFromWear();
+                _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
+            }
+        }
+
         float deltaH = deltaPosition.y;
-        float deltaD = new Vector2(deltaPosition.x, deltaPosition.z).magnitude;
-
-        // 현재 경사도 계산 (라디안)
-        currentSlopeAngleRad = fatigueCalc.CalculateSlopeAngle(deltaH, deltaD);
-
-        // 활동 강도 추정 (단순화: 이동 속도 기반)
-        float currentSpeed = deltaPosition.magnitude / deltaTime;
-        // 0 (가만히) ~ 1 (걷기) ~ 1.5+ (뛰기) 등으로 정규화/매핑 필요
-        // 예시: 걷는 속도(moveSpeed) 기준 1, 뛰는 속도 기준 1.5
-        float baseIntensity = Mathf.Clamp01(currentSpeed / moveSpeed);
-        intensityFactor = baseIntensity;
-
-        previousPosition = currentPosition; // 현재 위치를 다음 계산을 위해 저장
+        float deltaD_horizontal = new Vector2(deltaPosition.x, deltaPosition.z).magnitude;
+        currentSlopeAngleRad = fatigueCalc.CalculateSlopeAngle(deltaH, deltaD_horizontal);
+        float currentSpeed = distanceDeltaMeters / deltaTime;
+        intensityFactor = Mathf.Clamp01(currentSpeed / moveSpeed);
+        previousPosition = currentPosition;
     }
 
     private void UpdateFatigue()
@@ -172,7 +196,8 @@ public class Character : MonoBehaviour
         }
         if (equippedFootWear != null && direction.magnitude > 0.1f && isGrounded)
         {
-            UseEquipment(equippedFootWear, "walkstep", 0.05f * speedMultiplier * (isRunning ? 0.05f : 0.01f));
+            //UseEquipment(equippedFootWear, "walkstep", 0.05f * speedMultiplier * (isRunning ? 0.05f : 0.01f)); //여기서 호출하지 말고 move delta로
+            //UseEquipment(equippedFootWear, "walkstep", (0.05f * speedMultiplier * (isRunning ? 0.05f : 0.01f)), );
         }
     }
 
@@ -235,22 +260,32 @@ public class Character : MonoBehaviour
         return currentStamina >= staminaCost;
     }
 
-    public int CalcDurabilityCost(Equipment item, string usageContext, float intensity = 1.0f)
-    {
-        return durabilityCalc.CalculateDurabilityCost(item, usageContext, intensity);
-    }
 
-    public void UseEquipment(Equipment item, string usageContext, float intensity = 1.0f)
-    {
-        int cost = CalcDurabilityCost(item, usageContext, intensity);
-        item.Use(cost);
+    //이거 2개 이제 직접 호출 없음
+    //public int CalcDurabilityCost(Equipment item, string usageContext,
+    //                                float moveDist, float terrainCoef, float userWeight, float loadWeight, float weatherCoef,
+    //                                float w_dist, float w_terrain, float w_userWeight, float w_loadWeight, float w_weather, float intensity = 1.0f)
+    //{
+    //    return durabilityCalc.CalculateDurabilityCost(item, usageContext, moveDist, terrainCoef, userWeight,
+    //                                                    loadWeight, weatherCoef, w_dist, w_terrain, w_userWeight,
+    //                                                    w_loadWeight, w_weather, intensity);
+    //}
 
-        if (gameObject.CompareTag("Player"))
-        {
-            //UIManager uiManager = FindObjectOfType<UIManager>(); 
-            _uiManager?.UpdateDurabilitySlider(item.durability, item.maxDurability);
-        }
-    }
+    //public void UseEquipment(Equipment item, string usageContext,
+    //                            float moveDist, float terrainCoef, float userWeight, float loadWeight, float weatherCoef,
+    //                            float w_dist, float w_terrain, float w_userWeight, float w_loadWeight, float w_weather, float intensity = 1.0f)
+    //{
+    //    int cost = CalcDurabilityCost(item, usageContext, moveDist, terrainCoef, userWeight,
+    //                                                    loadWeight, weatherCoef, w_dist, w_terrain, w_userWeight,
+    //                                                    w_loadWeight, w_weather, intensity);
+    //    item.Use(cost);
+
+    //    if (gameObject.CompareTag("Player"))
+    //    {
+    //        //UIManager uiManager = FindObjectOfType<UIManager>(); 
+    //        _uiManager?.UpdateDurabilitySlider(item.durability, item.maxDurability);
+    //    }
+    //}
 
     public bool IsOverloaded()
     {
@@ -290,6 +325,21 @@ public class Character : MonoBehaviour
         equippedFootWear = newFootWear;
         if (newFootWear != null)
         {
+            // 신발 타입에 따라 maxWearCapacity 설정
+            // 기본 계산조건에서 마모율 2.5, 500*2.5=1250, 800*2.5=1600, 300*2.5=900
+            switch (newFootWear.soleType)
+            {
+                case FootWear.SoleType.Normal:
+                    newFootWear.maxWearCapacity = 1250; // 목표: 500km
+                    break;
+                case FootWear.SoleType.Luxury:
+                    newFootWear.maxWearCapacity = 1600; // 목표: 800km
+                    break;
+                case FootWear.SoleType.Light:
+                    newFootWear.maxWearCapacity = 900;  // 목표: 300km
+                    break;
+            }
+
             Debug.Log($"Equipped: {newFootWear.itemName}");
             equippedFootWear = newFootWear;
             _uiManager.UpdateDurabilitySlider(newFootWear.durability, newFootWear.maxDurability);
@@ -328,6 +378,18 @@ public class Character : MonoBehaviour
             Debug.LogWarning("Cannot change sole type: No footwear equipped.");
             // 또는, 해당 타입의 새 신발을 생성/장착하는 로직 추가 가능
             // EquipFootwear(new Footwear("New Boots", 100, 100, newType));
+        }
+    }
+
+    public void OnLanded()
+    {
+        if (equippedFootWear != null)
+        {
+            Debug.Log("Landed! Applying durability wear.");
+            // 착지 충격에 대한 마모도 0.5
+            equippedFootWear.currentWear += 0.5f;
+            equippedFootWear.UpdateDurabilityFromWear();
+            _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
         }
     }
 }

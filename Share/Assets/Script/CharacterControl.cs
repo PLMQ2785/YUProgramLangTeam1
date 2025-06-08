@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(CapsuleCollider))] // 또는 CapsuleCollider, 근데 미끄러지는거 보정이 귀찮아서 box로 했음
+[RequireComponent(typeof(BoxCollider))] // 또는 CapsuleCollider, 근데 미끄러지는거 보정이 귀찮아서 box로 했음
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Character))] // Character 데이터 컴포넌트 필수
 public class CharacterControl : MonoBehaviour
@@ -14,7 +14,7 @@ public class CharacterControl : MonoBehaviour
     [Header("Components")]
     private Character characterData;
     private Rigidbody playerRB;
-    private CapsuleCollider playerCollider; // 또는 CapsuleCollider
+    private BoxCollider playerCollider; // 또는 CapsuleCollider
     private Animator playerAnimator;
 
     [Header("Movement Settings")]
@@ -27,12 +27,12 @@ public class CharacterControl : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayerMask;
-    private float groundCheckDistance = 1f;
+    private float groundCheckDistance = 1.5f;
     private Vector3 groundCheckOffset = new Vector3(0, -0.0f, 0); // 콜라이더 하단 기준 조정.... 하려 했는데 필요에 따라서....
     [SerializeField] private bool isGrounded;
 
     [Tooltip("지면 체크 구의 반지름 (캐릭터 콜라이더 너비보다 약간 작게)")]
-    [SerializeField] private float groundCheckRadius = 0.45f;
+    private float groundCheckRadius = 0.45f;
     [Tooltip("지면으로 간주할 최대 거리 (발바닥 ~ 지면)")]
     private RaycastHit groundHitInfo; // 충돌 정보를 저장할 변수 -> 단순 raycast로 하니까 다단점프 되길래 몇번 시도끝에 이걸로 하면 괜찮아서 수정
 
@@ -46,7 +46,7 @@ public class CharacterControl : MonoBehaviour
 
         characterData = GetComponent<Character>();
         playerRB = GetComponent<Rigidbody>();
-        playerCollider = GetComponent<CapsuleCollider>();
+        playerCollider = GetComponent<BoxCollider>();
         playerAnimator = GetComponent<Animator>();
 
         if (characterData == null) Debug.LogError("Character data component not found!");
@@ -202,15 +202,13 @@ public class CharacterControl : MonoBehaviour
         );
 
         // 디버깅용 시각화 (Scene 뷰에서만 보임), 일단 해결했으니 안써도 됨!
-        //#if UNITY_EDITOR
-        //        Vector3 endPoint = sphereStartPoint + Vector3.down * (hitGround ? groundHitInfo.distance : castDistance);
-        //        Color sphereColor = hitGround ? Color.green : Color.red;
-        //        Debug.DrawLine(sphereStartPoint, endPoint, sphereColor);
-        //        // 구를 시각화하려면 OnDrawGizmos를 사용하거나 커스텀 에디터 스크립트가 필요할 수 있는데.
-        //        // 간단하게 라인으로 대체합니다.
-        //#endif
-
-        isGrounded = hitGround;
+#if UNITY_EDITOR
+        Vector3 endPoint = sphereStartPoint + Vector3.down * (hitGround ? groundHitInfo.distance : castDistance);
+        Color sphereColor = hitGround ? Color.blue : Color.red;
+        Debug.DrawLine(sphereStartPoint, endPoint, sphereColor);
+        // 구를 시각화하려면 OnDrawGizmos를 사용하거나 커스텀 에디터 스크립트가 필요할 수 있는데.
+        // 간단하게 라인으로 대체합니다.
+#endif
 
         //// Y축 속도 확인 로직
         //if (playerRB.linearVelocity.y > 0.1f)
@@ -221,6 +219,8 @@ public class CharacterControl : MonoBehaviour
         //{
         //    isGrounded = hitGround;
         //}
+
+        isGrounded = hitGround;
 
         // 예전에 필요할거 같아서 넣어놨는데 지금은 딱히 필요없을거 같음
         // 지면에 닿았고, 경사도 계산이 필요하다면 groundHitInfo.normal 사용 가능

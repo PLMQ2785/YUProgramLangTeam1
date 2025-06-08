@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI weatherTextUI;
     public Slider durabilitySliderUI;
     public TextMeshProUGUI fatigueScoreTextUI;
+    public TextMeshProUGUI totalDistanceTextUI; // 총 이동 거리 표시용
 
     [Header("Environment")]
     public TMP_InputField temperatureInput;
@@ -26,6 +27,7 @@ public class UIManager : MonoBehaviour
     public TMP_InputField weightInput;
     public TMP_InputField ageInput;
     public TMP_Dropdown genderDropdown;
+    public TMP_InputField loadWeightInput;
 
     [Header("Fatigue Coef")]
     public TMP_InputField kSlopeInput;
@@ -55,6 +57,7 @@ public class UIManager : MonoBehaviour
     private const string WEATHER_PREFIX = "Weather : ";
     private const string FATIGUE_PREFIX = "Fatigue Score : ";
     private const float DURABILITY_DEFAULT_VALUE = 1f;
+    private const string DISTANCE_PREFIX = "Distance : ";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,7 +68,12 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        updateDistanceUI();
+    }
 
+    private void updateDistanceUI()
+    {
+        totalDistanceTextUI.text = DISTANCE_PREFIX + character.TotalDistanceKm.ToString("F2") + " km";
     }
 
     public void Init()
@@ -144,6 +152,7 @@ public class UIManager : MonoBehaviour
         heightInput.text = character.Height.ToString("F0");
         weightInput.text = character.Weight.ToString("F1");
         ageInput.text = character.Age.ToString();
+        loadWeightInput.text = character.CurrentLoad.ToString("F1");
 
         FatigueCalculator fatigueCalc = character.GetFatigueCalculator();
         if (fatigueCalc != null)
@@ -181,6 +190,7 @@ public class UIManager : MonoBehaviour
         wSlopeInput.onEndEdit.AddListener(OnWSlopeChanged);
         timeSlider.onValueChanged.AddListener(OnTimeChanged);
         multiplierSlider.onValueChanged.AddListener(OnMultiplierChanged);
+        loadWeightInput.onEndEdit.AddListener(OnLoadWeightChanged);
     }
 
     //public string SlopeAngleText { set { if (slopeAngleTextUI) slopeAngleTextUI.text = SLOPE_ANGLE_PREFIX + value; } }
@@ -207,5 +217,18 @@ public class UIManager : MonoBehaviour
     void OnWSlopeChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w5_Slope = v; else { wSlopeInput.text = character.GetFatigueCalculator().w5_Slope.ToString("F2"); } }
     void OnTimeChanged(float value) { gameTime.SetTimeOfDay(value); UpdateTimeDisplay(value); }
     void OnMultiplierChanged(float value) { gameTime.SetTimeMultiplier(value); UpdateMultiplierDisplay(value); }
+    void OnLoadWeightChanged(string value)
+    {
+        if (float.TryParse(value, out float v))
+        {
+            character.SetCurrentLoad(v);
+        }
+        else
+        {
+            loadWeightInput.text = character.CurrentLoad.ToString("F1");
+        }
+    }
+
+    //public float 
 
 }
