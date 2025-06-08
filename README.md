@@ -33,3 +33,5 @@ Unity Editor가 필요한 파일을 실행 시 재구성 합니다.
 고용량 파일의 경우는 git에 업로드가 곤란한 관계로 별도로 분리하여 여기에 업로드 합니다.
 해당 사항 참고 바랍니다!
 https://drive.google.com/drive/u/5/folders/1gDyWgRi_xxtZhPtJQdfvP0XhYHdAx76c
+
+전체 프로젝트 파일도 같이 업로드 해 두었습니다
