@@ -202,7 +202,11 @@ public class UIManager : MonoBehaviour
 
     void OnTemperatureChanged(string value) { if (float.TryParse(value, out float v)) { weather.SetTemperature(v); TempText = v.ToString("F1") + "°C"; } else { temperatureInput.text = weather.TemperatureCelcius.ToString("F1"); } }
     void OnHumidityChanged(string value) { if (float.TryParse(value, out float v)) weather.SetHumidity(v); else { humidityInput.text = weather.Humidity.ToString("F1"); } }
-    void OnSoleTypeChanged(int index) { character.ChangeFootwearType((FootWear.SoleType)index); }
+    void OnSoleTypeChanged(int index)
+    {
+        Debug.Log(index + " : " + soleTypeDropdown.options[index].text);
+        character.ChangeFootwearType((FootWear.SoleType)index);
+    }
     void OnWeatherChanged(int index) { string w = weatherDropdown.options[index].text; weather.SetCurrentCondition(w); WeatherText = w; }
     void OnSunPositionChanged(int index) { weatherController.SetSunAzimuthForSeason(sunPositionDropdown.options[index].text); }
     void OnHeightChanged(string value) { if (float.TryParse(value, out float v)) character.SetHeight(v); else { heightInput.text = character.Height.ToString("F0"); } }

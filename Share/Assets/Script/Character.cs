@@ -151,7 +151,7 @@ public class Character : MonoBehaviour
 
             // 앞으로 이걸로 호출할 것
             //
-            float wearAmount = durabilityCalc.CalculateWearAmount(this, weather, distanceDeltaKm, fixedTerrainFactor) * 10f;
+            float wearAmount = durabilityCalc.CalculateWearAmount(this, weather, distanceDeltaKm, fixedTerrainFactor) * 1000f;
             Debug.Log("WearAmount:" + wearAmount);
 
             if (wearAmount > 0)
@@ -159,6 +159,8 @@ public class Character : MonoBehaviour
                 equippedFootWear.currentWear += wearAmount;
                 equippedFootWear.UpdateDurabilityFromWear();
                 _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
+
+                Debug.Log("Current Dura: " + equippedFootWear.durability);
             }
         }
 
@@ -173,7 +175,7 @@ public class Character : MonoBehaviour
     private void UpdateFatigue()
     {
         //weather = GameManager.Instance.GetWeather();
-        float durationMinutes = activityDurationSeconds / 60f;
+        float durationMinutes = activityDurationSeconds;
         float newFatigue = fatigueCalc.CalculateFatigueScore(this, weather, currentSlopeAngleRad, intensityFactor, durationMinutes);
 
         // 피로도를 누적? 매번 새로 계산?
@@ -330,13 +332,13 @@ public class Character : MonoBehaviour
             switch (newFootWear.soleType)
             {
                 case FootWear.SoleType.Normal:
-                    newFootWear.maxWearCapacity = 1250; // 목표: 500km
+                    newFootWear.maxDurability = 1250; // 목표: 500km
                     break;
                 case FootWear.SoleType.Luxury:
-                    newFootWear.maxWearCapacity = 1600; // 목표: 800km
+                    newFootWear.maxDurability = 1600; // 목표: 800km
                     break;
                 case FootWear.SoleType.Light:
-                    newFootWear.maxWearCapacity = 900;  // 목표: 300km
+                    newFootWear.maxDurability = 900;  // 목표: 300km
                     break;
             }
 
@@ -363,11 +365,29 @@ public class Character : MonoBehaviour
 
     public void ChangeFootwearType(FootWear.SoleType newType)
     {
+
         if (equippedFootWear != null)
         {
+            Debug.Log(newType);
+
+            switch (newType)
+            {
+                case FootWear.SoleType.Normal:
+                    equippedFootWear.maxDurability = 1250; // 목표: 500km
+                    break;
+                case FootWear.SoleType.Luxury:
+                    equippedFootWear.maxDurability = 1600; // 목표: 800km
+                    break;
+                case FootWear.SoleType.Light:
+                    equippedFootWear.maxDurability = 900;  // 목표: 300km
+                    break;
+            }
+
+
             equippedFootWear.soleType = newType;
             // 내구도를 최대로 재설정
             equippedFootWear.durability = equippedFootWear.maxDurability;
+            equippedFootWear.currentWear = 0f; // 마모량 초기화
             Debug.Log($"Footwear type changed to {newType}, Durability reset to {equippedFootWear.durability}.");
 
             // UI 업데이트 호출
@@ -383,13 +403,13 @@ public class Character : MonoBehaviour
 
     public void OnLanded()
     {
-        if (equippedFootWear != null)
-        {
-            Debug.Log("Landed! Applying durability wear.");
-            // 착지 충격에 대한 마모도 0.5
-            equippedFootWear.currentWear += 0.5f;
-            equippedFootWear.UpdateDurabilityFromWear();
-            _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
-        }
+        //if (equippedFootWear != null)
+        //{
+        //    Debug.Log("Landed! Applying durability wear.");
+        //    // 착지 충격에 대한 마모도 0.5
+        //    equippedFootWear.currentWear += 0.5f;
+        //    equippedFootWear.UpdateDurabilityFromWear();
+        //    _uiManager?.UpdateDurabilitySlider(equippedFootWear.durability, equippedFootWear.maxDurability);
+        //}
     }
 }
