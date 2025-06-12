@@ -91,11 +91,6 @@ public class CharacterControl : MonoBehaviour
             playerAnimator.SetBool(ANIM_PARAM_JUMP, true); //애니메이션 플래그
         }
 
-        //if (inputManager.IsKeyDown(KeyCode.E))
-        //{
-        //    characterData.TakeAction("interact"); //일단 넣어는 놨는데..... 쓸려면 쓰세요
-        //}
-
         if (isGrounded)
         {
             playerAnimator.SetBool(ANIM_PARAM_JUMP, false);
@@ -121,17 +116,11 @@ public class CharacterControl : MonoBehaviour
         velocityChange.z = Mathf.Clamp(velocityChange.z, -10f, 10f);// z축 속도 제한
         velocityChange.y = 0;// y축 속도는 0으로 설정 (점프시 y축 속도는 ApplyJumpForce에서 처리함)
 
-        //Move At으로 써도 되긴 하는데... 예전에 했던 프로젝트 코드 가져오면서 그냥 미는걸로 해두었으니 참고하세요...
         //필요하면 Move At으로 바꿀수 있습니다!
         if (isGrounded)
         {
             playerRB.AddForce(velocityChange, ForceMode.VelocityChange);
         }
-        //else
-        //{
-        //    playerRB.AddForce(velocityChange * 0.2f, ForceMode.VelocityChange); // 공중 제어력 감소
-        //}
-        //AdjustMovementForSlope();
     }
 
     private void PerformRotation()

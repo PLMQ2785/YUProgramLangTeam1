@@ -41,8 +41,6 @@ public class DurabilityCalculator
         float weatherCoef = GetClimateFactor(weather);
 
         // 최종 마모량 = (각 요인별 마모율의 합) * 이동 거리
-        // W = (w_dist + w_terrain*T + w_userWeight*M + w_loadWeight*H + w_weather*ε) * D
-
         float totalWearRate = w_dist +
                               (w_terrain * terrainCoef) +
                               (w_userWeight * userWeight) +
@@ -51,23 +49,6 @@ public class DurabilityCalculator
 
         float finalWear = totalWearRate * moveDistKm;
 
-        //// 깔창 타입에 따른 보너스/페널티
-        //if (character.EquippedFootWear != null)
-        //{
-        //    switch (character.EquippedFootWear.soleType)
-        //    {
-        //        case FootWear.SoleType.Luxury:
-        //            finalWear *= 0.8f; // 고급: 마모도 20% 감소
-        //            break;
-        //        case FootWear.SoleType.Light:
-        //            finalWear *= 1.2f; // 경량: 마모도 20% 증가
-        //            break;
-        //        case FootWear.SoleType.Normal:
-        //        default:
-        //            // 일반: 변화 없음
-        //            break;
-        //    }
-        //}
 
         return Mathf.Max(0, finalWear);
     }

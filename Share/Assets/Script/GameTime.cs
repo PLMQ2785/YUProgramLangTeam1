@@ -26,7 +26,7 @@ public class GameTime : MonoBehaviour
     {
         if (timeMultiplier > 0)
         {
-            timeOfDayMinutes += UnityEngine.Time.deltaTime * timeMultiplier/60;
+            timeOfDayMinutes += UnityEngine.Time.deltaTime * timeMultiplier;
             timeOfDayMinutes %= MINUTES_IN_DAY;
             _uiManager.UpdateTimeDisplay(timeOfDayMinutes);
         }
