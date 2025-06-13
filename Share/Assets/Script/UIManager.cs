@@ -213,12 +213,12 @@ public class UIManager : MonoBehaviour
     void OnWeightChanged(string value) { if (float.TryParse(value, out float v)) character.SetWeight(v); else { weightInput.text = character.Weight.ToString("F1"); } }
     void OnAgeChanged(string value) { if (int.TryParse(value, out int v)) character.SetAge(v); else { ageInput.text = character.Age.ToString(); } }
     void OnGenderChanged(int index) { character.SetGender((Gender)index); }
-    //void OnKSlopeChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_slope = v; else { kSlopeInput.text = character.GetFatigueCalculator().k_slope.ToString("F3"); } }
-    //void OnKTempChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_temp = v; else { kTempInput.text = character.GetFatigueCalculator().k_temp.ToString("F4"); } }
-    //void OnKHumidChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_humid = v; else { kHumidInput.text = character.GetFatigueCalculator().k_humid.ToString("F4"); } }
-    //void OnWTempChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w3_Temp = v; else { wTempInput.text = character.GetFatigueCalculator().w3_Temp.ToString("F2"); } }
-    //void OnWHumidChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w4_Humid = v; else { wHumidInput.text = character.GetFatigueCalculator().w4_Humid.ToString("F2"); } }
-    //void OnWSlopeChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w5_Slope = v; else { wSlopeInput.text = character.GetFatigueCalculator().w5_Slope.ToString("F2"); } }
+    void OnKSlopeChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_slope = v; else { kSlopeInput.text = character.GetFatigueCalculator().k_slope.ToString("F3"); } }
+    void OnKTempChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_temp = v; else { kTempInput.text = character.GetFatigueCalculator().k_temp.ToString("F4"); } }
+    void OnKHumidChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().k_humid = v; else { kHumidInput.text = character.GetFatigueCalculator().k_humid.ToString("F4"); } }
+    void OnWTempChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w3_Temp = v; else { wTempInput.text = character.GetFatigueCalculator().w3_Temp.ToString("F2"); } }
+    void OnWHumidChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w4_Humid = v; else { wHumidInput.text = character.GetFatigueCalculator().w4_Humid.ToString("F2"); } }
+    void OnWSlopeChanged(string value) { if (float.TryParse(value, out float v)) character.GetFatigueCalculator().w5_Slope = v; else { wSlopeInput.text = character.GetFatigueCalculator().w5_Slope.ToString("F2"); } }
     void OnTimeChanged(float value) { gameTime.SetTimeOfDay(value); UpdateTimeDisplay(value); }
     void OnMultiplierChanged(float value) { gameTime.SetTimeMultiplier(value); UpdateMultiplierDisplay(value); }
     void OnLoadWeightChanged(string value)
