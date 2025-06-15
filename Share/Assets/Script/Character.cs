@@ -151,7 +151,7 @@ public class Character : MonoBehaviour
 
             // 앞으로 이걸로 호출할 것
             //
-            float wearAmount = durabilityCalc.CalculateWearAmount(this, weather, distanceDeltaKm, fixedTerrainFactor) * 1000f;
+            float wearAmount = durabilityCalc.CalculateWearAmount(this, weather, distanceDeltaKm, fixedTerrainFactor) * 1f;
             Debug.Log("WearAmount:" + wearAmount);
 
             if (wearAmount > 0)

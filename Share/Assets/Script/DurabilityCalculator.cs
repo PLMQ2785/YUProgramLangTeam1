@@ -7,7 +7,7 @@ public class DurabilityCalculator
     [Tooltip("w_dist: 이동 거리에 대한 가중치")]
     public float w_dist = 0.89f;
     [Tooltip("w_terrain: 지형 계수에 대한 가중치")]
-    public float w_terrain = 0.5f;
+    public float w_terrain = 1.4f;
     [Tooltip("w_userWeight: 사용자 체중에 대한 가중치")]
     public float w_userWeight = 0.0015f;
     [Tooltip("w_loadWeight: 하중에 대한 가중치")]
